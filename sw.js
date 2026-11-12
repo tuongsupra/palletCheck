@@ -1,11 +1,12 @@
 // Service worker: precache toàn bộ file tĩnh, cache-first, chạy offline.
 // Khi sửa bất kỳ file nào: TĂNG VERSION để điện thoại tải bản mới ở lần mở sau.
-const VERSION = 'v1.0.5';
+const VERSION = 'v1.0.6';
 const CACHE = `pallet-checker-${VERSION}`;
 
 const ASSETS = [
   './',
   './index.html',
+  './print-gauge.html',
   './css/style.css',
   './js/app.js',
   './js/classify.js',

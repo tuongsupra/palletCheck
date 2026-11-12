@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>In thước mẫu Pallet A4</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background: #0d47a1;
+      color: #fff;
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+    .toolbar h1 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .toolbar .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+    }
+    .btn-print {
+      background: #ff9800;
+      color: #000;
+    }
+    .btn-download {
+      background: #fff;
+      color: #0d47a1;
+    }
+    .btn-back {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+    .notice {
+      width: 95%;
+      max-width: 210mm;
+      margin: 12px auto 0;
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      color: #856404;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .page-container {
+      width: 210mm;
+      max-width: 95vw;
+      background: #fff;
+      margin: 16px auto 32px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      display: flex;
+      justify-content: center;
+    }
+    .page-container img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 210 / 297;
+      display: block;
+    }
+    @media print {
+      body {
+        background: #fff;
+      }
+      .toolbar, .notice {
+        display: none !important;
+      }
+      .page-container {
+        margin: 0;
+        box-shadow: none;
+        width: 210mm;
+        max-width: 210mm;
+        height: 297mm;
+      }
+      .page-container img {
+        width: 210mm;
+        height: 297mm;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="toolbar">
+    <h1>Thước mẫu kiểm pallet A4</h1>
+    <div class="actions">
+      <button type="button" class="btn btn-print" onclick="window.print()">🖨️ In ngay (Ctrl+P)</button>
+      <a href="assets/gauge-card.svg" download="thuoc-mau-pallet-A4.svg" class="btn btn-download">📥 Tải file SVG</a>
+      <a href="./" class="btn btn-back">⬅ Quay lại app</a>
+    </div>
+  </header>
+  <div class="notice">
+    ⚠️ <strong>Lưu ý quan trọng khi in:</strong> Chọn khổ giấy <strong>A4</strong>, Tỉ lệ (Scale): chọn <strong>100% / Kích thước thực (Actual size)</strong> — <em>KHÔNG chọn "Vừa trang" (Fit to page)</em>. Sau khi in, dùng thước thật kiểm tra vạch 100mm ở mục 1 để đảm bảo đúng tỉ lệ.
+  </div>
+  <div class="page-container">
+    <img src="assets/gauge-card.svg" alt="Thước mẫu kiểm pallet A4">
+  </div>
+</body>
+</html>
