@@ -34,7 +34,7 @@ function buildStatic() {
   $('#privacy').textContent = TEXTS.help.privacy;
   document.querySelectorAll('[data-close]').forEach((b) => b.setAttribute('aria-label', TEXTS.ui.close));
 
-  // 4 thẻ nhóm
+  // 4 thẻ nhóm gọn gàng
   const html = Object.entries(RULES).map(([g, r]) => {
     const t = TEXTS.groups[g];
     const keys = r.canRenail ? KEYS : ['vua', 'nang'];
@@ -44,7 +44,7 @@ function buildStatic() {
       <div class="counter" data-g="${g}" data-k="${k}">
         <div class="info">
           <span class="name" id="${id}-name">${esc(TEXTS.counters[k])}</span>
-          <span class="hint" id="${id}-hint">${esc(TEXTS.hints[g][k])}</span>
+          <span class="hint" id="${id}-hint">${esc(TEXTS.shortHints[g][k])}</span>
         </div>
         <div class="stepper" role="group" aria-labelledby="${id}-name">
           <button type="button" class="step" data-act="dec" aria-label="${esc(TEXTS.ui.decrease)} ${esc(TEXTS.counters[k])} ${esc(t.name)}">−</button>
@@ -53,14 +53,19 @@ function buildStatic() {
         </div>
       </div>`;
     }).join('');
+
     return `
     <section class="card group" id="card-${g}" aria-labelledby="h-${g}">
       <div class="group-head">
-        <span class="swatch sw-${g}" aria-hidden="true"></span>
-        <h2 id="h-${g}">${esc(t.name)} <span class="total">— ${r.total} ${esc(t.unit)}</span></h2>
+        <div class="head-left">
+          <span class="swatch sw-${g}" aria-hidden="true"></span>
+          <h2 id="h-${g}">${esc(t.name)} <span class="total">(${r.total} thanh)</span></h2>
+        </div>
+        <div class="head-right" id="badge-${g}"></div>
       </div>
-      <p class="group-desc">${esc(t.desc)}</p>
-      ${rows}
+      <div class="counters-wrap">
+        ${rows}
+      </div>
     </section>`;
   }).join('');
   $('#groups').innerHTML = html;
@@ -89,11 +94,51 @@ function buildHelp() {
     <p class="privacy">${esc(h.privacy)}</p>`;
 }
 
+// Xây dựng danh sách giải thích chi tiết nguyên nhân
+function buildExplanations(res) {
+  if (res.level === 1) {
+    return ['Pallet đạt chuẩn sử dụng: Không có cấu kiện sứt lớn hoặc hỏng nặng.'];
+  }
+
+  const list = [];
+
+  for (const [g, r] of Object.entries(RULES)) {
+    const { vua = 0, nang = 0 } = state[g];
+    const name = TEXTS.groups[g].name;
+    const unit = TEXTS.groups[g].unit;
+
+    if (nang > 0) {
+      if (nang >= r.th4) {
+        list.push(`<strong>${esc(name)}</strong> hỏng nặng: <strong>${nang} ${esc(unit)}</strong> (vượt ngưỡng TH4: ≥ ${r.th4} ${esc(unit)})`);
+      } else if (nang >= r.th3) {
+        const range = r.th4 - 1 > r.th3 ? `${r.th3}–${r.th4 - 1}` : `${r.th3}`;
+        list.push(`<strong>${esc(name)}</strong> hỏng nặng: <strong>${nang} ${esc(unit)}</strong> (thuộc ngưỡng TH3: ${range} ${esc(unit)})`);
+      } else if (nang >= r.th2) {
+        const range = r.th3 - 1 > r.th2 ? `${r.th2}–${r.th3 - 1}` : `${r.th2}`;
+        list.push(`<strong>${esc(name)}</strong> hỏng nặng: <strong>${nang} ${esc(unit)}</strong> (thuộc ngưỡng TH2: ${range} ${esc(unit)})`);
+      }
+    }
+
+    if (vua > 0) {
+      const ruleHint = g === 'gu' ? 'sâu ≥20mm hoặc rộng ≥1/3 mặt' : 'sâu ≥25mm hoặc dài ≥300mm';
+      list.push(`<strong>${esc(name)}</strong> sứt lớn: <strong>${vua} ${esc(unit)}</strong> (${ruleHint} → quy định tối thiểu TH2)`);
+    }
+  }
+
+  if (res.totalDamaged >= 7) {
+    list.push(`Tổng cấu kiện sứt lớn + hỏng nặng: <strong>${res.totalDamaged}/26 thanh</strong> (≥ 7 thanh, chiếm từ 25% pallet → nâng lên TH4)`);
+  }
+
+  return list;
+}
+
 // ---------- Vẽ trạng thái ----------
 function render() {
-  // Bộ đếm
+  // Bộ đếm và nhãn trạng thái từng nhóm
   for (const [g, r] of Object.entries(RULES)) {
     const full = used(g) >= r.total;
+    const { vua = 0, nang = 0, longDinh = 0 } = state[g];
+
     document.querySelectorAll(`#card-${g} .counter`).forEach((row) => {
       const k = row.dataset.k;
       const v = state[g][k];
@@ -106,13 +151,23 @@ function render() {
       inc.disabled = full;
       inc.title = full ? TEXTS.ui.full : '';
     });
+
+    // Cập nhật huy hiệu trạng thái của từng nhóm
+    const bg = $(`#badge-${g}`);
+    if (bg) {
+      if (nang >= r.th4) bg.innerHTML = `<span class="grp-badge lv4">TH4 (${nang} hỏng)</span>`;
+      else if (nang >= r.th3) bg.innerHTML = `<span class="grp-badge lv3">TH3 (${nang} hỏng)</span>`;
+      else if (nang >= r.th2) bg.innerHTML = `<span class="grp-badge lv2">TH2 (${nang} hỏng)</span>`;
+      else if (vua > 0) bg.innerHTML = `<span class="grp-badge lv2">TH2 (${vua} sứt)</span>`;
+      else if (longDinh > 0) bg.innerHTML = `<span class="grp-badge warn">${longDinh} bung đinh</span>`;
+      else bg.innerHTML = '';
+    }
   }
 
   let res;
   try {
     res = classify(state);
   } catch (e) {
-    // Giao diện đã chặn dữ liệu sai; đây chỉ là phòng hờ
     console.error(e);
     showToast(e.message);
     return;
@@ -131,54 +186,72 @@ function renderResult(res) {
   const bar = $('#result');
   const R = TEXTS.results[res.level];
   bar.className = 'result';
+  const explanations = buildExplanations(res);
 
   if (res.status === 'recheck') {
     bar.classList.add('recheck');
     const items = res.recheckGroups
-      .map((x) => `${esc(TEXTS.groups[x.group].name)}: ${x.count} ${esc(TEXTS.groups[x.group].unit)}`)
-      .join(' · ');
+      .map((x) => `<strong>${esc(TEXTS.groups[x.group].name)}</strong> (${x.count} ${esc(TEXTS.groups[x.group].unit)})`)
+      .join(', ');
+
     bar.innerHTML = `
       <div class="result-inner">
-        <p class="rc-title">${esc(TEXTS.recheck.title)}</p>
-        <p class="rc-prov">${esc(TEXTS.recheck.provisional)}: <strong>${res.label}</strong> — ${esc(R.meaning)}</p>
-        <p class="rc-list">${esc(TEXTS.recheck.listTitle)} ${items}</p>
-        <div class="rc-actions">
-          <button type="button" class="btn btn-warn" data-act="renailed">${esc(TEXTS.recheck.button)}</button>
-          <button type="button" class="btn btn-light" data-act="details">${esc(TEXTS.ui.details)}</button>
+        <div class="res-head">
+          <div class="res-title-area">
+            <span class="res-badge res-label recheck">CHƯA CHỐT</span>
+            <div class="res-sub-group">
+              <span class="res-meaning">${esc(TEXTS.recheck.title)}</span>
+              <span class="res-total rc-prov">Tạm tính: <strong>${res.label}</strong> — ${esc(R.meaning)}</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-sm btn-warn" data-act="renailed">${esc(TEXTS.recheck.button)}</button>
+        </div>
+
+        <div class="res-body">
+          <div class="res-notice">
+            ⚠️ <strong>Cần đóng lại đinh:</strong> ${items}
+          </div>
+          <div class="res-causes">
+            <span class="causes-label">📌 Nguyên nhân tạm tính ${res.label}:</span>
+            <ul class="causes-list">
+              ${explanations.map((s) => `<li>${s}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="res-action-text">
+            <strong>👉 Hướng dẫn:</strong> Đóng lại đinh các thanh bị bung rồi bấm nút <strong>"Đã đóng lại"</strong>. Thanh nào nứt/không đóng lại được thì chuyển sang Hỏng nặng.
+          </div>
         </div>
       </div>`;
   } else {
     bar.classList.add('lv' + res.level);
+
     bar.innerHTML = `
-      <div class="result-inner res-row">
-        <span class="res-label">${res.label}</span>
-        <span class="res-meaning">${esc(R.meaning)}</span>
-        <button type="button" class="btn btn-light" data-act="details">${esc(TEXTS.ui.details)}</button>
+      <div class="result-inner">
+        <div class="res-head">
+          <div class="res-title-area">
+            <span class="res-badge res-label lv${res.level}">${res.label}</span>
+            <div class="res-sub-group">
+              <span class="res-meaning">${esc(R.meaning)}</span>
+              <span class="res-total">Hư hỏng: <strong>${res.totalDamaged}/26</strong> thanh</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-white" data-act="reset">Pallet mới</button>
+        </div>
+
+        <div class="res-body">
+          <div class="res-causes">
+            <span class="causes-label">📌 Nguyên nhân xếp loại ${res.label}:</span>
+            <ul class="causes-list">
+              ${explanations.map((s) => `<li>${s}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="res-action-text">
+            <strong>👉 Hành động:</strong> ${esc(R.action)}
+          </div>
+        </div>
       </div>`;
   }
   bar._res = res;
-  if ($('#dlg-details').open) fillDetails(res);
-}
-
-function fillDetails(res) {
-  const R = TEXTS.results[res.level];
-  const recheck = res.status === 'recheck';
-  $('#details-title').textContent = recheck ? TEXTS.recheck.title : `${res.label} — ${R.meaning}`;
-  const reasons = res.reasons.length
-    ? `<ul>${res.reasons.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>`
-    : `<p>${esc(TEXTS.ui.noReasons)}</p>`;
-  const rcList = recheck
-    ? `<h3>${esc(TEXTS.recheck.listTitle)}</h3><ul>${res.recheckGroups.map((x) => `<li>${esc(TEXTS.groups[x.group].name)}: ${x.count} ${esc(TEXTS.groups[x.group].unit)}</li>`).join('')}</ul><p>${esc(TEXTS.recheck.reminder)}</p>`
-    : '';
-  $('#details-body').innerHTML = `
-    <p>${recheck ? `<span class="badge recheck">CHƯA CHỐT</span> ${esc(TEXTS.recheck.provisional)}: ` : ''}<span class="badge lv${res.level}">${res.label}</span></p>
-    <p><strong>${esc(R.meaning)}</strong></p>
-    <h3>${esc(TEXTS.ui.actionTitle)}</h3>
-    <p>${esc(recheck ? TEXTS.recheck.action : R.action)}</p>
-    ${rcList}
-    <h3>${esc(TEXTS.ui.reasonsTitle)}</h3>
-    ${reasons}
-    <p>${esc(TEXTS.ui.totalDamaged)}: <strong>${res.totalDamaged}</strong> / 26</p>`;
 }
 
 // ---------- Thông báo ----------
@@ -189,6 +262,16 @@ function showToast(msg, ms = 6000) {
   el.hidden = false;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.hidden = true; }, ms);
+}
+
+// Đặt lại dữ liệu pallet
+function resetPallet() {
+  if (isDirty() && !window.confirm(TEXTS.ui.confirmReset)) return;
+  state = blank();
+  last = null;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast(TEXTS.ui.resetDone, 2500);
 }
 
 // Giữ chỗ dưới cùng bằng chiều cao thanh kết quả
@@ -220,32 +303,24 @@ function bind() {
   $('#result').addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-act]');
     if (!btn) return;
-    if (btn.dataset.act === 'details') {
-      fillDetails($('#result')._res);
-      openDialog($('#dlg-details'));
+    if (btn.dataset.act === 'reset') {
+      resetPallet();
     }
     if (btn.dataset.act === 'renailed') {
-      // Đã đóng lại đinh: xóa bung đinh, tính lại, nhắc nhập hỏng nặng nếu có thanh không đóng được
       for (const g of Object.keys(RULES)) if ('longDinh' in state[g]) state[g].longDinh = 0;
       render();
       showToast(TEXTS.recheck.reminder, 8000);
     }
   });
 
-  $('#btn-reset').addEventListener('click', () => {
-    if (isDirty() && !window.confirm(TEXTS.ui.confirmReset)) return;
-    state = blank();
-    last = null;
-    render();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    showToast(TEXTS.ui.resetDone, 2500);
-  });
+  $('#btn-reset').addEventListener('click', resetPallet);
+  const quickReset = $('#btn-quick-reset');
+  if (quickReset) quickReset.addEventListener('click', resetPallet);
 
   $('#btn-help').addEventListener('click', () => openDialog($('#dlg-help')));
 
   document.querySelectorAll('dialog').forEach((dlg) => {
     dlg.addEventListener('click', (e) => {
-      // Bấm nút đóng hoặc bấm ra nền ngoài hộp
       if (e.target.closest('[data-close]') || e.target === dlg) dlg.close ? dlg.close() : dlg.removeAttribute('open');
     });
   });

@@ -24,7 +24,38 @@ export const TEXTS = {
   counters: {
     vua: 'Sứt lớn',
     nang: 'Hỏng nặng',
-    longDinh: 'Bung đinh / tách rời (còn nguyên)',
+    longDinh: 'Bung đinh (còn nguyên)',
+  },
+
+  // Gợi ý ngắn gọn ngay trên dòng đếm
+  shortHints: {
+    mat: {
+      vua: 'Sâu ≥ 25mm hoặc dài ≥ 300mm',
+      nang: 'Gãy, vỡ, nứt, mất',
+      longDinh: 'Bung đinh, gỗ còn nguyên',
+    },
+    ganh: {
+      vua: 'Sâu ≥ 25mm hoặc dài ≥ 300mm',
+      nang: 'Gãy, nứt, mất chịu lực',
+      longDinh: 'Tách rời, gỗ còn nguyên',
+    },
+    gu: {
+      vua: 'Sâu ≥ 20mm hoặc rộng ≥ 1/3',
+      nang: 'Vỡ, nứt, tách đôi, mất',
+    },
+    day: {
+      vua: 'Sâu ≥ 25mm hoặc dài ≥ 300mm',
+      nang: 'Gãy, vỡ, nứt, mất',
+      longDinh: 'Bung đinh, gỗ còn nguyên',
+    },
+  },
+
+  // Ngưỡng phân loại phục vụ giải thích nguyên nhân
+  thresholds: {
+    mat:  { th2: '1–3 thanh', th3: '4–5 thanh', th4: '≥ 6 thanh' },
+    ganh: { th3: '1 thanh', th4: '≥ 2 thanh' },
+    gu:   { th2: '1 cục', th3: '2–3 cục', th4: '≥ 4 cục' },
+    day:  { th2: '1–3 thanh', th3: '4 thanh', th4: '5 thanh' },
   },
 
   // Dòng gợi ý dưới từng bộ đếm, theo nhóm
