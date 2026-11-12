@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#0d47a1"/>
+  <!-- thanh mặt -->
+  <rect x="96" y="250" width="320" height="36" rx="6" fill="#fff"/>
+  <!-- cục gù -->
+  <rect x="108" y="292" width="56" height="60" rx="4" fill="#fff"/>
+  <rect x="228" y="292" width="56" height="60" rx="4" fill="#fff"/>
+  <rect x="348" y="292" width="56" height="60" rx="4" fill="#fff"/>
+  <!-- thanh đáy -->
+  <rect x="96" y="358" width="320" height="30" rx="6" fill="#fff"/>
+  <!-- dấu tích -->
+  <path d="M176 160 l52 52 l108 -108" fill="none" stroke="#ffc107" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
