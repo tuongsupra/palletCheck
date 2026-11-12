@@ -1,6 +1,6 @@
 // Gắn giao diện với classify(). Không lưu gì: tải lại trang là bắt đầu lại.
 import { classify } from './classify.js';
-import { RULES } from './rules.js';
+import { RULES, TOTAL_TH4 } from './rules.js';
 import { TEXTS } from '../content/texts.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -125,16 +125,113 @@ function buildExplanations(res) {
     }
   }
 
-  if (res.totalDamaged >= 7) {
+  if (res.totalDamaged >= TOTAL_TH4) {
     list.push(`Tổng cấu kiện sứt lớn + hỏng nặng: <strong>${res.totalDamaged}/26 thanh</strong> (≥ 7 thanh, chiếm từ 25% pallet → nâng lên TH4)`);
   }
 
   return list;
 }
 
+// Tính toán đề xuất sửa 1-2 chi tiết để đưa về trạng thái tốt hơn
+function buildRepairSuggestions(state, currentRes) {
+  if (currentRes.level <= 1) {
+    return ['Pallet đã đạt chuẩn TH1 (sẵn sàng sử dụng), không cần sửa chữa cấu kiện.'];
+  }
+
+  const currentLevel = currentRes.level;
+  const repairable = [];
+
+  for (const [g, r] of Object.entries(RULES)) {
+    if (state[g].nang > 0) {
+      repairable.push({ group: g, type: 'nang', count: state[g].nang, label: r.label, unit: TEXTS.groups[g].unit });
+    }
+    if (state[g].vua > 0) {
+      repairable.push({ group: g, type: 'vua', count: state[g].vua, label: r.label, unit: TEXTS.groups[g].unit });
+    }
+  }
+
+  if (repairable.length === 0) return [];
+
+  const clone = (s) => JSON.parse(JSON.stringify(s));
+  const fixes1 = [];
+  const fixes2 = [];
+
+  // 1. Thử sửa 1 cấu kiện
+  for (const it of repairable) {
+    const next = clone(state);
+    next[it.group][it.type]--;
+    const r = classify(next);
+    if (r.level < currentLevel) {
+      fixes1.push({
+        group: it.group,
+        type: it.type,
+        label: it.label,
+        targetLevel: r.level,
+        targetLabel: r.label,
+        action: it.type === 'nang' ? `thay 1 ${it.label}` : `sửa 1 ${it.label} sứt lớn`,
+      });
+    }
+  }
+
+  // 2. Thử sửa 2 cấu kiện (chỉ quan tâm nếu tốt hơn kết quả của sửa 1 hoặc khi chưa sửa 1 được)
+  const bestLevel1 = fixes1.length ? Math.min(...fixes1.map(f => f.targetLevel)) : currentLevel;
+  for (let i = 0; i < repairable.length; i++) {
+    for (let j = i; j < repairable.length; j++) {
+      const it1 = repairable[i], it2 = repairable[j];
+      if (i === j && it1.count < 2) continue;
+      const next = clone(state);
+      next[it1.group][it1.type]--;
+      next[it2.group][it2.type]--;
+      const r = classify(next);
+
+      if (r.level < bestLevel1 || (fixes1.length === 0 && r.level < currentLevel)) {
+        const desc = i === j
+          ? (it1.type === 'nang' ? `thay 2 ${it1.label}` : `sửa 2 ${it1.label} sứt lớn`)
+          : (it1.type === 'nang' ? `thay 1 ${it1.label}` : `sửa 1 ${it1.label}`) + ' và ' + (it2.type === 'nang' ? `thay 1 ${it2.label}` : `sửa 1 ${it2.label}`);
+        fixes2.push({
+          targetLevel: r.level,
+          targetLabel: r.label,
+          desc,
+        });
+      }
+    }
+  }
+
+  const suggestions = [];
+
+  // Gom nhóm gợi ý 1 chi tiết
+  const grouped1 = {};
+  for (const f of fixes1) {
+    if (!grouped1[f.targetLabel]) grouped1[f.targetLabel] = [];
+    grouped1[f.targetLabel].push(f.action);
+  }
+  for (const [targetLabel, actions] of Object.entries(grouped1)) {
+    const text = actions.join(' <em>HOẶC</em> ');
+    suggestions.push(`<strong>Sửa 1 chi tiết để lên ${targetLabel}:</strong> ${text}.`);
+  }
+
+  // Gom nhóm gợi ý 2 chi tiết
+  const grouped2 = {};
+  for (const f of fixes2) {
+    if (!grouped2[f.targetLabel]) grouped2[f.targetLabel] = new Set();
+    grouped2[f.targetLabel].add(f.desc);
+  }
+  for (const [targetLabel, descSet] of Object.entries(grouped2)) {
+    const text = Array.from(descSet).slice(0, 3).join('; ');
+    suggestions.push(`<strong>Sửa 2 chi tiết để lên ${targetLabel}:</strong> ${text}.`);
+  }
+
+  // Nếu không thể về TH2 hay TH1 chỉ với 1-2 sửa chữa: tính số lượng tối thiểu để về TH2/TH1
+  if (suggestions.length === 0) {
+    // Tìm cấu kiện hư hỏng nặng nhất
+    suggestions.push(`Hư hỏng quá nhiều cấu kiện, cần thay thế toàn diện các cấu kiện hỏng nặng để hạ cấp về TH2.`);
+  }
+
+  return suggestions;
+}
+
 // ---------- Vẽ trạng thái ----------
 function render() {
-  // Bộ đếm và nhãn trạng thái từng nhóm
   for (const [g, r] of Object.entries(RULES)) {
     const full = used(g) >= r.total;
     const { vua = 0, nang = 0, longDinh = 0 } = state[g];
@@ -152,7 +249,6 @@ function render() {
       inc.title = full ? TEXTS.ui.full : '';
     });
 
-    // Cập nhật huy hiệu trạng thái của từng nhóm
     const bg = $(`#badge-${g}`);
     if (bg) {
       if (nang >= r.th4) bg.innerHTML = `<span class="grp-badge lv4">TH4 (${nang} hỏng)</span>`;
@@ -174,7 +270,6 @@ function render() {
   }
   renderResult(res);
 
-  // Rung nhẹ khi đổi loại kết quả hoặc trạng thái (chỉ khi người dùng đã chạm màn hình)
   const canVibrate = navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive);
   if (last && (last.level !== res.level || last.status !== res.status) && canVibrate) {
     navigator.vibrate(res.level === 4 ? [60, 40, 60] : 40);
@@ -182,76 +277,108 @@ function render() {
   last = res;
 }
 
+// Hiển thị thanh kết quả dính đáy (Gọn gàng giống cũ)
 function renderResult(res) {
   const bar = $('#result');
   const R = TEXTS.results[res.level];
   bar.className = 'result';
-  const explanations = buildExplanations(res);
 
   if (res.status === 'recheck') {
     bar.classList.add('recheck');
     const items = res.recheckGroups
-      .map((x) => `<strong>${esc(TEXTS.groups[x.group].name)}</strong> (${x.count} ${esc(TEXTS.groups[x.group].unit)})`)
+      .map((x) => `${esc(TEXTS.groups[x.group].name)} (${x.count})`)
       .join(', ');
 
     bar.innerHTML = `
-      <div class="result-inner">
-        <div class="res-head">
-          <div class="res-title-area">
-            <span class="res-badge res-label recheck">CHƯA CHỐT</span>
-            <div class="res-sub-group">
-              <span class="res-meaning">${esc(TEXTS.recheck.title)}</span>
-              <span class="res-total rc-prov">Tạm tính: <strong>${res.label}</strong> — ${esc(R.meaning)}</span>
-            </div>
+      <div class="result-inner res-row">
+        <div class="res-left" data-act="details">
+          <span class="res-badge res-label recheck">CHƯA CHỐT</span>
+          <div class="res-text">
+            <span class="res-meaning">${esc(TEXTS.recheck.title)}</span>
+            <span class="res-sub rc-prov">Tạm tính: <strong>${res.label}</strong> · Cần đóng lại: ${items}</span>
           </div>
-          <button type="button" class="btn btn-sm btn-warn" data-act="renailed">${esc(TEXTS.recheck.button)}</button>
         </div>
-
-        <div class="res-body">
-          <div class="res-notice">
-            ⚠️ <strong>Cần đóng lại đinh:</strong> ${items}
-          </div>
-          <div class="res-causes">
-            <span class="causes-label">📌 Nguyên nhân tạm tính ${res.label}:</span>
-            <ul class="causes-list">
-              ${explanations.map((s) => `<li>${s}</li>`).join('')}
-            </ul>
-          </div>
-          <div class="res-action-text">
-            <strong>👉 Hướng dẫn:</strong> Đóng lại đinh các thanh bị bung rồi bấm nút <strong>"Đã đóng lại"</strong>. Thanh nào nứt/không đóng lại được thì chuyển sang Hỏng nặng.
-          </div>
+        <div class="res-right">
+          <button type="button" class="btn btn-warn btn-sm" data-act="renailed">${esc(TEXTS.recheck.button)}</button>
+          <button type="button" class="btn btn-light btn-sm" data-act="details">${esc(TEXTS.ui.details)}</button>
         </div>
       </div>`;
   } else {
     bar.classList.add('lv' + res.level);
 
     bar.innerHTML = `
-      <div class="result-inner">
-        <div class="res-head">
-          <div class="res-title-area">
-            <span class="res-badge res-label lv${res.level}">${res.label}</span>
-            <div class="res-sub-group">
-              <span class="res-meaning">${esc(R.meaning)}</span>
-              <span class="res-total">Hư hỏng: <strong>${res.totalDamaged}/26</strong> thanh</span>
-            </div>
+      <div class="result-inner res-row">
+        <div class="res-left" data-act="details">
+          <span class="res-badge res-label lv${res.level}">${res.label}</span>
+          <div class="res-text">
+            <span class="res-meaning">${esc(R.meaning)}</span>
+            <span class="res-sub">Hư hỏng: <strong>${res.totalDamaged}/26</strong> thanh</span>
           </div>
-          <button type="button" class="btn btn-sm btn-outline-white" data-act="reset">Pallet mới</button>
         </div>
-
-        <div class="res-body">
-          <div class="res-causes">
-            <span class="causes-label">📌 Nguyên nhân xếp loại ${res.label}:</span>
-            <ul class="causes-list">
-              ${explanations.map((s) => `<li>${s}</li>`).join('')}
-            </ul>
-          </div>
-          <div class="res-action-text">
-            <strong>👉 Hành động:</strong> ${esc(R.action)}
-          </div>
+        <div class="res-right">
+          <button type="button" class="btn btn-light btn-sm" data-act="details">${esc(TEXTS.ui.details)}</button>
         </div>
       </div>`;
   }
   bar._res = res;
+  if ($('#dlg-details').open) fillDetails(res);
+}
+
+// Điền nội dung hộp thoại chi tiết kết quả & đề xuất sửa chữa
+function fillDetails(res) {
+  const R = TEXTS.results[res.level];
+  const recheck = res.status === 'recheck';
+  $('#details-title').textContent = recheck ? TEXTS.recheck.title : `${res.label} — ${R.meaning}`;
+
+  const explanations = buildExplanations(res);
+  const repairSuggestions = buildRepairSuggestions(state, res);
+
+  const recheckSection = recheck
+    ? `<div class="dlg-section dlg-box-warn">
+        <h4>⚠️ Cần đóng lại đinh trước khi chốt:</h4>
+        <ul class="dlg-list">
+          ${res.recheckGroups.map((x) => `<li><strong>${esc(TEXTS.groups[x.group].name)}</strong>: ${x.count} ${esc(TEXTS.groups[x.group].unit)}</li>`).join('')}
+        </ul>
+        <p style="margin: 6px 0 0; font-size: 0.8125rem;">${esc(TEXTS.recheck.reminder)}</p>
+      </div>`
+    : '';
+
+  const repairSection = repairSuggestions && repairSuggestions.length
+    ? `<div class="dlg-section repair-box">
+        <h4>💡 Đề xuất sửa chữa để nâng cấp pallet:</h4>
+        <ul class="repair-list">
+          ${repairSuggestions.map(s => `<li>${s}</li>`).join('')}
+        </ul>
+      </div>`
+    : '';
+
+  $('#details-body').innerHTML = `
+    <div class="dlg-status-banner lv${res.level} ${recheck ? 'recheck' : ''}">
+      <span class="dlg-badge">${recheck ? 'CHƯA CHỐT' : res.label}</span>
+      <div class="dlg-status-info">
+        <h3>${esc(recheck ? 'Tạm tính: ' + res.label + ' — ' + R.meaning : R.meaning)}</h3>
+        <p>Tổng cấu kiện hư hỏng: <strong>${res.totalDamaged}/26</strong> thanh</p>
+      </div>
+    </div>
+
+    ${recheckSection}
+
+    <div class="dlg-section">
+      <h4>📌 Nguyên nhân xếp loại ${res.label}:</h4>
+      <ul class="dlg-list">
+        ${explanations.map(s => `<li>${s}</li>`).join('')}
+      </ul>
+    </div>
+
+    ${repairSection}
+
+    <div class="dlg-section">
+      <h4>👉 Hành động khuyến nghị:</h4>
+      <p class="dlg-action-text">${esc(recheck ? TEXTS.recheck.action : R.action)}</p>
+    </div>
+
+    <button type="button" class="btn btn-outline wide" data-close style="margin-top: 12px;">Đóng</button>
+  `;
 }
 
 // ---------- Thông báo ----------
@@ -301,16 +428,23 @@ function bind() {
   });
 
   $('#result').addEventListener('click', (e) => {
-    const btn = e.target.closest('button[data-act]');
-    if (!btn) return;
-    if (btn.dataset.act === 'reset') {
-      resetPallet();
+    const target = e.target;
+    const actBtn = target.closest('[data-act]');
+    if (actBtn) {
+      if (actBtn.dataset.act === 'details') {
+        fillDetails($('#result')._res);
+        openDialog($('#dlg-details'));
+      }
+      if (actBtn.dataset.act === 'renailed') {
+        for (const g of Object.keys(RULES)) if ('longDinh' in state[g]) state[g].longDinh = 0;
+        render();
+        showToast(TEXTS.recheck.reminder, 8000);
+      }
+      return;
     }
-    if (btn.dataset.act === 'renailed') {
-      for (const g of Object.keys(RULES)) if ('longDinh' in state[g]) state[g].longDinh = 0;
-      render();
-      showToast(TEXTS.recheck.reminder, 8000);
-    }
+    // Bấm vào vùng thanh kết quả cũng mở chi tiết
+    fillDetails($('#result')._res);
+    openDialog($('#dlg-details'));
   });
 
   $('#btn-reset').addEventListener('click', resetPallet);

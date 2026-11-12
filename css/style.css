@@ -12,8 +12,8 @@
   --th4: #b91c1c;
   --warn-bg: #1e293b;
   --warn: #f59e0b;
-  --bar-h: 180px;
-  --tap: 46px;
+  --bar-h: 74px;
+  --tap: 44px;
   font-size: 16px;
 }
 
@@ -38,7 +38,7 @@ button:disabled { cursor: not-allowed; }
 .topbar {
   position: sticky; top: 0; z-index: 5;
   background: var(--brand); color: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
 }
 .topbar-inner {
   max-width: 480px; margin: 0 auto;
@@ -57,7 +57,7 @@ button:disabled { cursor: not-allowed; }
 .top-btn:active { background: rgba(255, 255, 255, 0.3); }
 
 .icon-btn {
-  width: 42px; height: 42px;
+  width: 40px; height: 40px;
   border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.8);
   background: transparent; color: #fff; font-size: 1.25rem; font-weight: 700;
   display: inline-flex; align-items: center; justify-content: center;
@@ -138,59 +138,47 @@ main {
   border-radius: 8px; border: 1.5px solid transparent;
   font-weight: 700; font-size: 0.9375rem;
 }
-.btn-sm { min-height: 36px; padding: 0 10px; font-size: 0.8125rem; }
+.btn-sm { min-height: 38px; padding: 0 12px; font-size: 0.875rem; }
 .btn-outline { background: #fff; border-color: var(--brand); color: var(--brand); }
-.btn-outline-white {
-  background: rgba(255, 255, 255, 0.15); border: 1.5px solid rgba(255, 255, 255, 0.8);
-  color: #fff;
-}
-.btn-outline-white:active { background: rgba(255, 255, 255, 0.3); }
+.btn-light { background: #fff; color: var(--ink); border-color: #fff; }
 .btn-warn { background: var(--warn); color: #1e293b; border-color: var(--warn); }
 .btn-warn:active { background: #d97706; color: #fff; }
 .wide { width: 100%; margin-top: 4px; }
 
 .privacy { text-align: center; font-size: 0.75rem; color: var(--muted); margin: 8px 0 0; }
 
-/* ---------- Thanh kết quả dính đáy (Sticky Result Bar) ---------- */
+/* ---------- Thanh kết quả dính đáy (Sticky Result Bar - Gọn gàng) ---------- */
 .result {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
-  padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
   color: #fff; background: var(--th1);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
-  border-top: 3px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.22);
 }
-.result-inner { max-width: 480px; margin: 0 auto; }
+.result-inner {
+  max-width: 480px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
 .result.lv1 { background: var(--th1); }
 .result.lv2 { background: var(--th2); }
 .result.lv3 { background: var(--th3); }
 .result.lv4 { background: var(--th4); }
-.result.recheck { background: var(--warn-bg); border-top: 4px solid var(--warn); }
+.result.recheck { background: var(--warn-bg); border-top: 3px solid var(--warn); }
 
-.res-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
-.res-title-area { display: flex; align-items: center; gap: 10px; }
+.res-left {
+  display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1 1 auto; cursor: pointer;
+}
 .res-badge {
-  font-size: 1.75rem; font-weight: 900; line-height: 1; letter-spacing: 0.5px;
-  background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 6px;
+  font-size: 2rem; font-weight: 900; line-height: 1; letter-spacing: 0.5px; flex: none;
 }
-.res-badge.recheck { font-size: 1rem; color: var(--warn); background: rgba(245, 158, 11, 0.15); border: 1px solid var(--warn); }
-.res-sub-group { display: flex; flex-direction: column; }
-.res-meaning { font-size: 0.9375rem; font-weight: 700; line-height: 1.2; }
-.res-total { font-size: 0.75rem; opacity: 0.9; margin-top: 2px; }
+.res-badge.recheck {
+  font-size: 0.9375rem; color: var(--warn); background: rgba(245, 158, 11, 0.15);
+  border: 1px solid var(--warn); padding: 4px 6px; border-radius: 6px;
+}
+.res-text { min-width: 0; }
+.res-meaning { display: block; font-size: 0.9375rem; font-weight: 700; line-height: 1.25; }
+.res-sub { display: block; font-size: 0.75rem; opacity: 0.9; margin-top: 2px; }
 
-.res-body {
-  background: rgba(0, 0, 0, 0.22); border-radius: 8px; padding: 6px 10px;
-  font-size: 0.8125rem; line-height: 1.35;
-}
-.res-notice {
-  margin-bottom: 4px; font-size: 0.8125rem; color: #fde68a; font-weight: 600;
-}
-.causes-label { font-weight: 700; display: block; margin-bottom: 2px; color: #fff; }
-.causes-list { margin: 0; padding-left: 18px; }
-.causes-list li { margin: 2px 0; }
-.res-action-text {
-  margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.2);
-  font-size: 0.8125rem;
-}
+.res-right { display: flex; align-items: center; gap: 6px; flex: none; }
 
 /* ---------- Thông báo ---------- */
 .toast {
@@ -213,9 +201,9 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
 .dlg-head {
   position: sticky; top: 0; z-index: 1;
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  padding: 8px 12px; background: #fff; border-bottom: 1px solid var(--line);
+  padding: 10px 12px; background: #fff; border-bottom: 1px solid var(--line);
 }
-.dlg-head h2 { margin: 0; font-size: 1.125rem; }
+.dlg-head h2 { margin: 0; font-size: 1.125rem; font-weight: 800; }
 .dlg-body { padding: 12px 14px 20px; font-size: 0.875rem; }
 .dlg-body h3 { margin: 14px 0 4px; font-size: 0.9375rem; }
 .dlg-body h3:first-child { margin-top: 2px; }
@@ -226,6 +214,43 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
 .dlg-body dt { font-weight: 700; margin-top: 6px; }
 .dlg-body dd { margin: 2px 0 0; color: var(--muted); }
 .dlg-body a.btn { display: flex; align-items: center; justify-content: center; text-decoration: none; margin-top: 10px; }
+
+/* Banner kết quả trong Dialog */
+.dlg-status-banner {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border-radius: 8px; color: #fff; margin-bottom: 10px;
+}
+.dlg-status-banner.lv1 { background: var(--th1); }
+.dlg-status-banner.lv2 { background: var(--th2); }
+.dlg-status-banner.lv3 { background: var(--th3); }
+.dlg-status-banner.lv4 { background: var(--th4); }
+.dlg-status-banner.recheck { background: var(--warn-bg); border-left: 4px solid var(--warn); }
+.dlg-badge { font-size: 2rem; font-weight: 900; line-height: 1; flex: none; }
+.dlg-status-info h3 { margin: 0; font-size: 1.0625rem; font-weight: 800; line-height: 1.25; }
+.dlg-status-info p { margin: 2px 0 0; font-size: 0.8125rem; opacity: 0.9; }
+
+/* Khối nội dung trong Dialog */
+.dlg-section {
+  background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 10px 12px; margin-bottom: 8px;
+}
+.dlg-section h4 {
+  margin: 0 0 6px; font-size: 0.9375rem; font-weight: 700; color: #0f172a;
+}
+.dlg-list { margin: 0; padding-left: 18px; font-size: 0.875rem; line-height: 1.4; color: #334155; }
+.dlg-list li { margin: 3px 0; }
+.dlg-action-text { margin: 0; font-size: 0.875rem; line-height: 1.4; color: #1e293b; font-weight: 600; }
+.dlg-box-warn { background: #fffbeb; border-color: #fde68a; }
+
+/* Hộp đề xuất sửa chữa nâng cấp */
+.dlg-section.repair-box {
+  background: #eff6ff; border: 1.5px solid #bfdbfe;
+}
+.dlg-section.repair-box h4 {
+  color: #1d4ed8;
+}
+.repair-list { margin: 0; padding-left: 18px; font-size: 0.875rem; line-height: 1.45; color: #1e3a8a; }
+.repair-list li { margin: 4px 0; }
 
 .badge {
   display: inline-block; padding: 2px 8px; border-radius: 6px;
