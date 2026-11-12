@@ -128,12 +128,19 @@ for (const [w, h] of [[360, 640], [412, 915]]) {
   const sw2 = await evalJs('[innerWidth, document.documentElement.scrollWidth]');
   console.log('cuộn ngang ở trạng thái recheck:', sw2[1] > sw2[0] ? 'CÓ!' : 'không');
 
-  // Nguyên nhân hiển thị trực tiếp & hướng dẫn
-  await evalJs(`__set({'mat-nang':4,'gu-vua':1})`);
+  // Chi tiết & Đề xuất sửa chữa trong dialog
+  await evalJs(`__set({'mat-nang':4,'gu-vua':1}); document.querySelector('#result [data-act=details]').click();`);
   await sleep(200);
-  await shot(`ui-${w}-causes.png`);
-  console.log('nguyên nhân hiển thị trực tiếp:', (await evalJs(`document.querySelector('#result .res-causes').innerText`)).replace(/\n+/g, ' | '));
-  await evalJs(`document.querySelector('#btn-help').click()`);
+  await shot(`ui-${w}-details.png`);
+  console.log('chi tiết trong dialog:', (await evalJs(`document.querySelector('#details-body').innerText`)).replace(/\n+/g, ' | '));
+  await evalJs(`document.querySelector('#dlg-details').close()`);
+
+  // Test case tổng 7 (ví dụ của người dùng: TH4 -> sửa 1 thanh về TH2)
+  await evalJs(`__set({'mat-nang':3,'gu-nang':1,'day-nang':3}); document.querySelector('#result [data-act=details]').click();`);
+  await sleep(300);
+  await shot(`ui-${w}-total7-repair.png`);
+  console.log('đề xuất sửa chữa case tổng 7:', (await evalJs(`document.querySelector('.repair-box').innerText`)).replace(/\n+/g, ' | '));
+  await evalJs(`document.querySelector('#dlg-details').close(); document.querySelector('#btn-help').click()`);
   await sleep(500);
   await shot(`ui-${w}-help.png`);
   await evalJs(`document.querySelector('#dlg-help').close(); __set({'mat-nang': 6})`);
