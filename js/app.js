@@ -40,16 +40,17 @@ function buildStatic() {
     const keys = r.canRenail ? KEYS : ['vua', 'nang'];
     const rows = keys.map((k) => {
       const id = `${g}-${k}`;
+      const counterName = (g === 'gu' && k === 'nang') ? 'Gãy / mất cả gù' : TEXTS.counters[k];
       return `
       <div class="counter" data-g="${g}" data-k="${k}">
         <div class="info">
-          <span class="name" id="${id}-name">${esc(TEXTS.counters[k])}</span>
+          <span class="name" id="${id}-name">${esc(counterName)}</span>
           <span class="hint" id="${id}-hint">${esc(TEXTS.shortHints[g][k])}</span>
         </div>
         <div class="stepper" role="group" aria-labelledby="${id}-name">
-          <button type="button" class="step" data-act="dec" aria-label="${esc(TEXTS.ui.decrease)} ${esc(TEXTS.counters[k])} ${esc(t.name)}">−</button>
+          <button type="button" class="step" data-act="dec" aria-label="${esc(TEXTS.ui.decrease)} ${esc(counterName)} ${esc(t.name)}">−</button>
           <output class="val zero" id="${id}-val" aria-live="off">0</output>
-          <button type="button" class="step" data-act="inc" aria-label="${esc(TEXTS.ui.increase)} ${esc(TEXTS.counters[k])} ${esc(t.name)}">+</button>
+          <button type="button" class="step" data-act="inc" aria-label="${esc(TEXTS.ui.increase)} ${esc(counterName)} ${esc(t.name)}">+</button>
         </div>
       </div>`;
     }).join('');
@@ -59,7 +60,7 @@ function buildStatic() {
       <div class="group-head">
         <div class="head-left">
           <span class="swatch sw-${g}" aria-hidden="true"></span>
-          <h2 id="h-${g}">${esc(t.name)} <span class="total">(${r.total} thanh)</span></h2>
+          <h2 id="h-${g}">${esc(t.name)} <span class="total">(${r.total} ${esc(t.unit)})</span></h2>
         </div>
         <div class="head-right" id="badge-${g}"></div>
       </div>
@@ -97,7 +98,7 @@ function buildHelp() {
 // Xây dựng danh sách giải thích chi tiết nguyên nhân
 function buildExplanations(res) {
   if (res.level === 1) {
-    return ['Pallet đạt chuẩn sử dụng: Không có cấu kiện sứt lớn hoặc hỏng nặng.'];
+    return ['Pallet đạt chuẩn sử dụng: Không có cấu kiện mất mảng gỗ hoặc gãy/mất cả thanh.'];
   }
 
   const list = [];
@@ -108,25 +109,26 @@ function buildExplanations(res) {
     const unit = TEXTS.groups[g].unit;
 
     if (nang > 0) {
+      const typeLabel = g === 'gu' ? 'gãy / mất cả gù' : 'gãy / mất cả thanh';
       if (nang >= r.th4) {
-        list.push(`<strong>${esc(name)}</strong> hỏng nặng: <strong>${nang} ${esc(unit)}</strong> (vượt ngưỡng TH4: ≥ ${r.th4} ${esc(unit)})`);
+        list.push(`<strong>${esc(name)}</strong> ${typeLabel}: <strong>${nang} ${esc(unit)}</strong> (vượt ngưỡng TH4: ≥ ${r.th4} ${esc(unit)})`);
       } else if (nang >= r.th3) {
         const range = r.th4 - 1 > r.th3 ? `${r.th3}–${r.th4 - 1}` : `${r.th3}`;
-        list.push(`<strong>${esc(name)}</strong> hỏng nặng: <strong>${nang} ${esc(unit)}</strong> (thuộc ngưỡng TH3: ${range} ${esc(unit)})`);
+        list.push(`<strong>${esc(name)}</strong> ${typeLabel}: <strong>${nang} ${esc(unit)}</strong> (thuộc ngưỡng TH3: ${range} ${esc(unit)})`);
       } else if (nang >= r.th2) {
         const range = r.th3 - 1 > r.th2 ? `${r.th2}–${r.th3 - 1}` : `${r.th2}`;
-        list.push(`<strong>${esc(name)}</strong> hỏng nặng: <strong>${nang} ${esc(unit)}</strong> (thuộc ngưỡng TH2: ${range} ${esc(unit)})`);
+        list.push(`<strong>${esc(name)}</strong> ${typeLabel}: <strong>${nang} ${esc(unit)}</strong> (thuộc ngưỡng TH2: ${range} ${esc(unit)})`);
       }
     }
 
     if (vua > 0) {
       const ruleHint = g === 'gu' ? 'sâu ≥20mm hoặc rộng ≥1/3 mặt' : 'sâu ≥25mm hoặc dài ≥300mm';
-      list.push(`<strong>${esc(name)}</strong> sứt lớn: <strong>${vua} ${esc(unit)}</strong> (${ruleHint} → quy định tối thiểu TH2)`);
+      list.push(`<strong>${esc(name)}</strong> mất mảng gỗ: <strong>${vua} ${esc(unit)}</strong> (${ruleHint} → quy định tối thiểu TH2)`);
     }
   }
 
   if (res.totalDamaged >= TOTAL_TH4) {
-    list.push(`Tổng cấu kiện sứt lớn + hỏng nặng: <strong>${res.totalDamaged}/26 thanh</strong> (≥ 7 thanh, chiếm từ 25% pallet → nâng lên TH4)`);
+    list.push(`Tổng cấu kiện mất mảng gỗ + gãy/mất: <strong>${res.totalDamaged}/26 thanh</strong> (≥ 7 thanh, chiếm từ 25% pallet → nâng lên TH4)`);
   }
 
   return list;
@@ -168,7 +170,7 @@ function buildRepairSuggestions(state, currentRes) {
         label: it.label,
         targetLevel: r.level,
         targetLabel: r.label,
-        action: it.type === 'nang' ? `thay 1 ${it.label}` : `sửa 1 ${it.label} sứt lớn`,
+        action: it.type === 'nang' ? `thay 1 ${it.label}` : `sửa 1 ${it.label} mất mảng gỗ`,
       });
     }
   }
@@ -186,7 +188,7 @@ function buildRepairSuggestions(state, currentRes) {
 
       if (r.level < bestLevel1 || (fixes1.length === 0 && r.level < currentLevel)) {
         const desc = i === j
-          ? (it1.type === 'nang' ? `thay 2 ${it1.label}` : `sửa 2 ${it1.label} sứt lớn`)
+          ? (it1.type === 'nang' ? `thay 2 ${it1.label}` : `sửa 2 ${it1.label} mất mảng gỗ`)
           : (it1.type === 'nang' ? `thay 1 ${it1.label}` : `sửa 1 ${it1.label}`) + ' và ' + (it2.type === 'nang' ? `thay 1 ${it2.label}` : `sửa 1 ${it2.label}`);
         fixes2.push({
           targetLevel: r.level,
@@ -224,7 +226,7 @@ function buildRepairSuggestions(state, currentRes) {
   // Nếu không thể về TH2 hay TH1 chỉ với 1-2 sửa chữa: tính số lượng tối thiểu để về TH2/TH1
   if (suggestions.length === 0) {
     // Tìm cấu kiện hư hỏng nặng nhất
-    suggestions.push(`Hư hỏng quá nhiều cấu kiện, cần thay thế toàn diện các cấu kiện hỏng nặng để hạ cấp về TH2.`);
+    suggestions.push(`Hư hỏng quá nhiều cấu kiện, cần thay thế toàn diện các cấu kiện gãy/mất để hạ cấp về TH2.`);
   }
 
   return suggestions;
@@ -251,10 +253,10 @@ function render() {
 
     const bg = $(`#badge-${g}`);
     if (bg) {
-      if (nang >= r.th4) bg.innerHTML = `<span class="grp-badge lv4">TH4 (${nang} hỏng)</span>`;
-      else if (nang >= r.th3) bg.innerHTML = `<span class="grp-badge lv3">TH3 (${nang} hỏng)</span>`;
-      else if (nang >= r.th2) bg.innerHTML = `<span class="grp-badge lv2">TH2 (${nang} hỏng)</span>`;
-      else if (vua > 0) bg.innerHTML = `<span class="grp-badge lv2">TH2 (${vua} sứt)</span>`;
+      if (nang >= r.th4) bg.innerHTML = `<span class="grp-badge lv4">TH4 (${nang} gãy/mất)</span>`;
+      else if (nang >= r.th3) bg.innerHTML = `<span class="grp-badge lv3">TH3 (${nang} gãy/mất)</span>`;
+      else if (nang >= r.th2) bg.innerHTML = `<span class="grp-badge lv2">TH2 (${nang} gãy/mất)</span>`;
+      else if (vua > 0) bg.innerHTML = `<span class="grp-badge lv2">TH2 (${vua} mất mảng)</span>`;
       else if (longDinh > 0) bg.innerHTML = `<span class="grp-badge warn">${longDinh} bung đinh</span>`;
       else bg.innerHTML = '';
     }

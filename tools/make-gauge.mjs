@@ -25,8 +25,8 @@ p(`<rect width="210" height="297" fill="#fff"/>`);
 t(105, 16, 'THƯỚC MẪU KIỂM PALLET', 6, 'text-anchor="middle" font-weight="700"');
 t(105, 23, 'In khổ A4, chọn "Kích thước thật / 100%" — KHÔNG chọn "Vừa trang"', 3.2, 'text-anchor="middle"');
 p(`<rect x="15" y="28" width="180" height="16" rx="2" fill="#fff3cd" stroke="#b58100" stroke-width="0.4"/>`);
-t(105, 35, 'Sâu ≥ 25mm HOẶC dài ≥ 300mm = Sứt lớn', 5.2, 'text-anchor="middle" font-weight="700"');
-t(105, 41, 'Cục gù: sâu ≥ 20mm HOẶC rộng ≥ 1/3 mặt gù = Sứt lớn', 3.4, 'text-anchor="middle"');
+t(105, 35, 'Sâu ≥ 25mm HOẶC dài ≥ 300mm = Mất mảng gỗ', 5.2, 'text-anchor="middle" font-weight="700"');
+t(105, 41, 'Cục gù: sâu ≥ 20mm HOẶC rộng ≥ 1/3 mặt gù = Mất mảng gỗ', 3.4, 'text-anchor="middle"');
 
 // 1) Vạch kiểm tra tỉ lệ 100mm
 t(15, 55, '1. Kiểm tra tỉ lệ in: đo đoạn dưới bằng thước thật, phải đúng 100mm.', 3.4, 'font-weight="700"');
@@ -35,7 +35,7 @@ ruler(55, 60, 100, 0);
 t(160, 64, 'mm', 3);
 
 // 2) Thước đo sâu: hai ngạnh 20mm và 25mm
-t(15, 85, '2. Thước đo SÂU — cắt theo nét đứt, cắm ngạnh vào vết sứt.', 3.4, 'font-weight="700"');
+t(15, 85, '2. Thước đo SÂU — cắt theo nét đứt, cắm ngạnh vào vết mất mảng.', 3.4, 'font-weight="700"');
 // Thân thước: x 20..110, y 92..108; ngạnh 20mm tại x 30..45, ngạnh 25mm tại x 80..95
 p(`<path d="M20 92 H110 V108 H95 V133 H80 V108 H45 V128 H30 V108 H20 Z" fill="#e8f0fe" stroke="#000" stroke-width="0.3" stroke-dasharray="1.5 1"/>`);
 t(65, 101.5, 'THƯỚC ĐO SÂU', 3.4, 'text-anchor="middle" font-weight="700"');
@@ -50,11 +50,11 @@ t(87.5, 120, '25', 4, 'text-anchor="middle" font-weight="700" fill="#c62828"');
 t(87.5, 125, 'mm', 2.6, 'text-anchor="middle" fill="#c62828"');
 t(87.5, 142, 'Thanh mặt/gánh/đáy', 3, 'text-anchor="middle"');
 // Ghi chú
-t(118, 100, 'Cắm ngạnh thẳng xuống đáy vết sứt:', 3);
+t(118, 100, 'Cắm ngạnh thẳng xuống đáy vết khuyết:', 3);
 t(118, 106, '• Ngạnh chạm đáy mà thân thước còn', 3);
 t(118, 111, '  hở trên mặt gỗ → chưa đủ sâu.', 3);
 t(118, 117, '• Ngạnh lọt hết, thân thước chạm', 3);
-t(118, 122, '  mặt gỗ → đủ sâu → SỨT LỚN.', 3, 'font-weight="700"');
+t(118, 122, '  mặt gỗ → đủ sâu → MẤT MẢNG GỖ.', 3, 'font-weight="700"');
 
 // 3) Thước đo dài 300mm: 2 dải nối nhau (A4 chỉ dài 297mm)
 t(15, 160, '3. Thước đo DÀI 300mm — A4 không đủ dài, cắt 2 dải rồi dán nối.', 3.4, 'font-weight="700"');
@@ -74,14 +74,14 @@ p(`<rect x="30" y="202" width="150" height="16" fill="#fff" stroke="#000" stroke
 ruler(30, 202, 150, 150);
 p(`<line x1="180" y1="198" x2="180" y2="222" stroke="#c62828" stroke-width="0.8"/>`);
 t(186, 209, '300mm', 3.2, 'font-weight="700" fill="#c62828"');
-t(186, 213.5, '= sứt lớn', 2.8, 'fill="#c62828"');
+t(186, 213.5, '= mất mảng gỗ', 2.8, 'fill="#c62828"');
 t(105, 216.5, '150 → 300mm', 2.8, 'text-anchor="middle" fill="#555"');
 
 // Hướng dẫn dùng
 t(15, 236, 'Cách dùng:', 3.4, 'font-weight="700"');
-t(15, 242, '• Đặt vạch 0 ở đầu vết sứt, kéo dọc thanh. Vết sứt tới hoặc quá vạch 300 → Sứt lớn.', 3);
-t(15, 248, '• Chỉ cần vượt MỘT trong hai ngưỡng (sâu HOẶC dài) là Sứt lớn.', 3);
-t(15, 254, '• Gãy, vỡ, nứt, mất thanh, gù tách đôi → nhập Hỏng nặng (không cần đo).', 3);
+t(15, 242, '• Đặt vạch 0 ở đầu vết khuyết, kéo dọc thanh. Vết khuyết tới hoặc quá vạch 300 → Mất mảng gỗ.', 3);
+t(15, 248, '• Chỉ cần vượt MỘT trong hai ngưỡng (sâu HOẶC dài) là Mất mảng gỗ.', 3);
+t(15, 254, '• Gãy, vỡ, nứt, mất thanh/cả cục gù → nhập Gãy / mất cả thanh (không cần đo).', 3);
 t(15, 260, '• Bung đinh nhưng gỗ còn nguyên → nhập Bung đinh, đóng lại đinh rồi kiểm lại.', 3);
 t(105, 285, 'Pallet Checker — dán thước lên bìa cứng để dùng lâu.', 2.8, 'text-anchor="middle" fill="#555"');
 

@@ -32,15 +32,15 @@ export function classify(input = {}) {
     if (vua + nang + longDinh > r.total)
       throw new RangeError(`${r.label}: vượt quá ${r.total}`);
 
-    // Chỉ sứt lớn + hỏng nặng tính vào tổng; bung đinh chưa tính
+    // Chỉ mất mảng gỗ + gãy/mất tính vào tổng; bung đinh chưa tính
     tong += vua + nang;
 
-    // Ngưỡng nhóm chỉ tính hỏng nặng
+    // Ngưỡng nhóm chỉ tính gãy/mất
     const lv = nang >= r.th4 ? 4 : nang >= r.th3 ? 3 : nang >= r.th2 ? 2 : 1;
-    if (lv > 1) raise(lv, `${r.label} hỏng nặng: ${nang}`);
+    if (lv > 1) raise(lv, `${r.label} gãy/mất: ${nang}`);
 
-    // Có sứt lớn → tối thiểu TH2
-    if (vua > 0) raise(2, `${r.label} sứt lớn: ${vua}`);
+    // Có mất mảng gỗ → tối thiểu TH2
+    if (vua > 0) raise(2, `${r.label} mất mảng gỗ: ${vua}`);
 
     if (longDinh > 0) recheckGroups.push({ group: k, count: longDinh });
   }
