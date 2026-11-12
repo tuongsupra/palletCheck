@@ -67,18 +67,7 @@ main {
   margin-bottom: 12px;
 }
 
-.q { margin: 0 0 4px; font-size: 1.0625rem; }
 .hint { margin: 0; font-size: 1rem; color: var(--muted); }
-
-/* ---------- Công tắc Có/Không ---------- */
-.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-.seg-btn {
-  min-height: var(--tap);
-  border: 2px solid var(--line); border-radius: 10px;
-  background: #fff; font-weight: 700; font-size: 1.0625rem;
-}
-.seg-btn[aria-pressed="true"] { background: var(--th1); border-color: var(--th1); color: #fff; }
-.seg-btn.danger[aria-pressed="true"] { background: var(--th4); border-color: var(--th4); }
 
 /* ---------- Thẻ nhóm ---------- */
 .group-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }

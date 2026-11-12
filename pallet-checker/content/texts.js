@@ -112,8 +112,7 @@ export const TEXTS = {
     title: 'Hướng dẫn sử dụng',
     stepsTitle: 'Các bước kiểm một pallet',
     steps: [
-      'Trả lời câu hỏi mối mọt / nhiễm bẩn / mục.',
-      'Đếm từng nhóm cấu kiện: bấm + cho mỗi thanh/cục bị Sứt lớn, Hỏng nặng hoặc Bung đinh.',
+      'Đếm từng nhóm cấu kiện (mặt, gánh, gù, đáy): bấm + cho mỗi thanh/cục bị Sứt lớn, Hỏng nặng hoặc Bung đinh.',
       'Sứt nhỏ (nhẹ) không cần nhập.',
       'Mỗi cấu kiện chỉ nhập vào MỘT mục, chọn mục nặng nhất.',
       'Kết quả hiện ngay ở thanh dưới cùng. Bấm "Xem chi tiết" để xem lý do.',

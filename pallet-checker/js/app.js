@@ -19,7 +19,7 @@ let last = null; // kết quả lần trước, để biết khi nào rung
 
 const used = (g) => KEYS.reduce((s, k) => s + (state[g][k] || 0), 0);
 const isDirty = () =>
-  state.moiMot || Object.keys(RULES).some((g) => used(g) > 0);
+  Object.keys(RULES).some((g) => used(g) > 0);
 
 // Thoát ký tự HTML khi chèn chuỗi
 const esc = (s) =>
@@ -30,10 +30,6 @@ function buildStatic() {
   $('#app-name').textContent = TEXTS.appName;
   $('#app-sub').textContent = TEXTS.appSubtitle;
   $('#btn-help').setAttribute('aria-label', TEXTS.ui.help);
-  $('#q-moimot').textContent = TEXTS.moiMot.question;
-  $('#q-moimot-hint').textContent = TEXTS.moiMot.hint;
-  $('#moimot-no').textContent = TEXTS.moiMot.no;
-  $('#moimot-yes').textContent = TEXTS.moiMot.yes;
   $('#btn-reset').textContent = TEXTS.ui.newPallet;
   $('#privacy').textContent = TEXTS.help.privacy;
   document.querySelectorAll('[data-close]').forEach((b) => b.setAttribute('aria-label', TEXTS.ui.close));
@@ -95,10 +91,6 @@ function buildHelp() {
 
 // ---------- Vẽ trạng thái ----------
 function render() {
-  // Công tắc mối mọt
-  $('#moimot-no').setAttribute('aria-pressed', String(!state.moiMot));
-  $('#moimot-yes').setAttribute('aria-pressed', String(state.moiMot));
-
   // Bộ đếm
   for (const [g, r] of Object.entries(RULES)) {
     const full = used(g) >= r.total;
@@ -215,9 +207,6 @@ function openDialog(dlg) {
 
 // ---------- Sự kiện ----------
 function bind() {
-  $('#moimot-no').addEventListener('click', () => { state.moiMot = false; render(); });
-  $('#moimot-yes').addEventListener('click', () => { state.moiMot = true; render(); });
-
   $('#groups').addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-act]');
     if (!btn || btn.disabled) return;
