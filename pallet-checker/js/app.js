@@ -290,17 +290,21 @@ function renderResult(res) {
       .join(', ');
 
     bar.innerHTML = `
-      <div class="result-inner res-row">
-        <div class="res-left" data-act="details">
-          <span class="res-badge res-label recheck">CHƯA CHỐT</span>
-          <div class="res-text">
-            <span class="res-meaning">${esc(TEXTS.recheck.title)}</span>
-            <span class="res-sub rc-prov">Tạm tính: <strong>${res.label}</strong> · Cần đóng lại: ${items}</span>
+      <div class="result-inner res-recheck-wrap">
+        <div class="res-row">
+          <div class="res-left" data-act="details">
+            <span class="res-badge res-label recheck">CHƯA CHỐT</span>
+            <div class="res-text">
+              <span class="res-meaning">${esc(TEXTS.recheck.title)}</span>
+              <span class="res-sub rc-prov">Tạm tính: <strong>${res.label}</strong> · ${items}</span>
+            </div>
+          </div>
+          <div class="res-right">
+            <button type="button" class="btn btn-light btn-sm" data-act="details">${esc(TEXTS.ui.details)}</button>
           </div>
         </div>
-        <div class="res-right">
-          <button type="button" class="btn btn-warn btn-sm" data-act="renailed">${esc(TEXTS.recheck.button)}</button>
-          <button type="button" class="btn btn-light btn-sm" data-act="details">${esc(TEXTS.ui.details)}</button>
+        <div class="res-recheck-action">
+          <button type="button" class="btn btn-warn wide" data-act="renailed">🔨 ${esc(TEXTS.recheck.button)}</button>
         </div>
       </div>`;
   } else {

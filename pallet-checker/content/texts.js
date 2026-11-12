@@ -111,7 +111,7 @@ export const TEXTS = {
 
   // Trạng thái chưa chốt (có bung đinh)
   recheck: {
-    title: 'CHƯA CHỐT — đóng lại đinh rồi kiểm lại',
+    title: 'Đóng lại đinh rồi kiểm lại',
     provisional: 'Tạm tính',
     action: 'Đóng lại đinh các thanh bị bung/tách, rồi kiểm tra lại.',
     listTitle: 'Cần đóng lại:',
