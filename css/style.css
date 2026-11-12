@@ -156,7 +156,6 @@ main {
 }
 .result-inner {
   max-width: 480px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
 }
 .result.lv1 { background: var(--th1); }
 .result.lv2 { background: var(--th2); }
@@ -164,21 +163,40 @@ main {
 .result.lv4 { background: var(--th4); }
 .result.recheck { background: var(--warn-bg); border-top: 3px solid var(--warn); }
 
+.res-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;
+}
 .res-left {
-  display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1 1 auto; cursor: pointer;
+  display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1 1 auto; cursor: pointer;
 }
 .res-badge {
   font-size: 2rem; font-weight: 900; line-height: 1; letter-spacing: 0.5px; flex: none;
 }
 .res-badge.recheck {
-  font-size: 0.9375rem; color: var(--warn); background: rgba(245, 158, 11, 0.15);
-  border: 1px solid var(--warn); padding: 4px 6px; border-radius: 6px;
+  font-size: 0.8125rem; color: #1e293b; background: var(--warn);
+  padding: 4px 6px; border-radius: 6px; font-weight: 800; white-space: nowrap; flex: none;
 }
-.res-text { min-width: 0; }
-.res-meaning { display: block; font-size: 0.9375rem; font-weight: 700; line-height: 1.25; }
-.res-sub { display: block; font-size: 0.75rem; opacity: 0.9; margin-top: 2px; }
+.res-text { min-width: 0; flex: 1 1 auto; overflow: hidden; }
+.res-meaning {
+  display: block; font-size: 0.9375rem; font-weight: 700; line-height: 1.25;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.res-sub {
+  display: block; font-size: 0.75rem; opacity: 0.9; margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 
 .res-right { display: flex; align-items: center; gap: 6px; flex: none; }
+
+.res-recheck-wrap {
+  display: flex; flex-direction: column; width: 100%;
+}
+.res-recheck-action {
+  margin-top: 6px; width: 100%;
+}
+.res-recheck-action .btn {
+  width: 100%; min-height: 42px; font-size: 0.9375rem; font-weight: 800;
+}
 
 /* ---------- Thông báo ---------- */
 .toast {
