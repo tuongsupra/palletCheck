@@ -44,12 +44,12 @@ const CASES = [
   [7, { 'ganh-vua': 1 }, 'TH2', 'final'], [8, { 'ganh-nang': 1 }, 'TH3', 'final'], [9, { 'ganh-nang': 2 }, 'TH4', 'final'],
   [10, { 'gu-nang': 1 }, 'TH2', 'final'], [11, { 'gu-nang': 2 }, 'TH3', 'final'], [12, { 'gu-nang': 3 }, 'TH3', 'final'],
   [13, { 'gu-nang': 4 }, 'TH4', 'final'], [14, { 'day-nang': 3 }, 'TH2', 'final'], [15, { 'day-nang': 4 }, 'TH3', 'final'],
-  [16, { 'day-nang': 5 }, 'TH4', 'final'], [17, { moiMot: 1 }, 'TH4', 'final'],
+  [16, { 'day-nang': 5 }, 'TH4', 'final'],
   [18, { 'mat-vua': 2, 'gu-vua': 1 }, 'TH2', 'final'], [19, { 'mat-nang': 3, 'day-nang': 3 }, 'TH2', 'final'],
   [20, { 'mat-nang': 3, 'gu-nang': 1, 'day-nang': 3 }, 'TH4', 'final'], [21, { 'mat-vua': 4, 'gu-vua': 3 }, 'TH4', 'final'],
-  [22, { 'mat-nang': 4, 'gu-nang': 1 }, 'TH3', 'final'], [26, { moiMot: 1, 'mat-nang': 6 }, 'TH4', 'final'],
+  [22, { 'mat-nang': 4, 'gu-nang': 1 }, 'TH3', 'final'],
   [27, { 'mat-longDinh': 2 }, 'TH1', 'recheck'], [28, { 'ganh-longDinh': 1 }, 'TH1', 'recheck'],
-  [29, { 'mat-nang': 6, 'day-longDinh': 1 }, 'TH4', 'final'], [30, { moiMot: 1, 'mat-longDinh': 2 }, 'TH4', 'final'],
+  [29, { 'mat-nang': 6, 'day-longDinh': 1 }, 'TH4', 'final'],
   [31, { 'mat-longDinh': 3, 'gu-nang': 2 }, 'TH3', 'recheck'], [34, { 'mat-vua': 1, 'mat-longDinh': 1 }, 'TH2', 'recheck'],
   [35, { 'mat-nang': 3, 'mat-longDinh': 2, 'day-nang': 3 }, 'TH2', 'recheck'], [36, { 'mat-longDinh': 9 }, 'TH1', 'recheck'],
 ];
@@ -60,9 +60,7 @@ window.confirm = () => true;
 window.__reset = () => document.querySelector('#btn-reset').click();
 window.__set = (spec) => {
   __reset();
-  if (spec.moiMot) document.querySelector('#moimot-yes').click();
   for (const [key, n] of Object.entries(spec)) {
-    if (key === 'moiMot') continue;
     const [g, k] = key.split('-');
     const inc = document.querySelector('.counter[data-g="'+g+'"][data-k="'+k+'"] [data-act=inc]');
     for (let i = 0; i < n; i++) inc.click();
@@ -138,7 +136,7 @@ for (const [w, h] of [[360, 640], [412, 915]]) {
   await evalJs(`document.querySelector('#dlg-details').close(); document.querySelector('#btn-help').click();`);
   await sleep(500);
   await shot(`ui-${w}-help.png`);
-  await evalJs(`document.querySelector('#dlg-help').close(); __set({moiMot:1})`);
+  await evalJs(`document.querySelector('#dlg-help').close(); __set({'mat-nang': 6})`);
   await shot(`ui-${w}-th4.png`);
 }
 
