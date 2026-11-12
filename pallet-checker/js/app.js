@@ -91,7 +91,10 @@ function buildHelp() {
     <dl>${[1, 2, 3, 4].map((n) => `<dt><span class="badge lv${n}">TH${n}</span> ${esc(TEXTS.results[n].meaning)}</dt><dd>${esc(TEXTS.results[n].action)}</dd>`).join('')}</dl>
     <h3>${esc(h.gaugeTitle)}</h3>
     <ol>${h.gauge.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
-    <a class="btn btn-outline" href="assets/gauge-card.svg" target="_blank" rel="noopener">${esc(h.gaugeLink)}</a>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <a class="btn btn-primary" href="print-gauge.html" target="_blank" style="flex:1;min-width:140px;text-align:center;text-decoration:none">🖨️ Mở trang in thước A4</a>
+      <a class="btn btn-outline" href="assets/gauge-card.svg" download="thuoc-mau-pallet-A4.svg" style="flex:1;min-width:140px;text-align:center;text-decoration:none">📥 Tải file SVG</a>
+    </div>
     <p class="privacy">${esc(h.privacy)}</p>`;
 }
 
