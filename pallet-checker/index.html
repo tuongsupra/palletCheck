@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pallet Checker — Phân loại pallet</title>
+  <meta name="description" content="Kiểm tra và phân loại pallet gỗ TH1–TH4 theo hướng dẫn Vinalog.">
+  <meta name="theme-color" content="#0d47a1">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/icons/icon-192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Pallet Checker">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1 id="app-name">Pallet Checker</h1>
+      <p id="app-sub" class="sub"></p>
+    </div>
+    <button type="button" id="btn-help" class="icon-btn" aria-haspopup="dialog" aria-label="Hướng dẫn">?</button>
+  </header>
+
+  <main id="main">
+    <!-- Câu hỏi nhanh -->
+    <section class="card quick" aria-labelledby="q-moimot">
+      <h2 id="q-moimot" class="q"></h2>
+      <p id="q-moimot-hint" class="hint"></p>
+      <div class="seg" role="group" aria-labelledby="q-moimot">
+        <button type="button" id="moimot-no" class="seg-btn" aria-pressed="true"></button>
+        <button type="button" id="moimot-yes" class="seg-btn danger" aria-pressed="false"></button>
+      </div>
+    </section>
+
+    <!-- 4 thẻ nhóm cấu kiện (app.js sinh nội dung) -->
+    <div id="groups"></div>
+
+    <button type="button" id="btn-reset" class="btn btn-outline wide"></button>
+    <p id="privacy" class="privacy"></p>
+  </main>
+
+  <!-- Thanh kết quả dính đáy -->
+  <section id="result" class="result" aria-live="polite" aria-atomic="true"></section>
+
+  <!-- Thông báo ngắn -->
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- Hộp chi tiết kết quả -->
+  <dialog id="dlg-details" aria-labelledby="details-title">
+    <div class="dlg-head">
+      <h2 id="details-title"></h2>
+      <button type="button" class="icon-btn close" data-close aria-label="Đóng">✕</button>
+    </div>
+    <div id="details-body" class="dlg-body"></div>
+  </dialog>
+
+  <!-- Hộp hướng dẫn -->
+  <dialog id="dlg-help" aria-labelledby="help-title">
+    <div class="dlg-head">
+      <h2 id="help-title"></h2>
+      <button type="button" class="icon-btn close" data-close aria-label="Đóng">✕</button>
+    </div>
+    <div id="help-body" class="dlg-body"></div>
+  </dialog>
+
+  <noscript><p class="card">Cần bật JavaScript để dùng ứng dụng.</p></noscript>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
