@@ -128,12 +128,12 @@ for (const [w, h] of [[360, 640], [412, 915]]) {
   const sw2 = await evalJs('[innerWidth, document.documentElement.scrollWidth]');
   console.log('cuộn ngang ở trạng thái recheck:', sw2[1] > sw2[0] ? 'CÓ!' : 'không');
 
-  // Chi tiết & hướng dẫn
-  await evalJs(`__set({'mat-nang':4,'gu-vua':1}); document.querySelector('#result [data-act=details]').click();`);
+  // Nguyên nhân hiển thị trực tiếp & hướng dẫn
+  await evalJs(`__set({'mat-nang':4,'gu-vua':1})`);
   await sleep(200);
-  await shot(`ui-${w}-details.png`);
-  console.log('chi tiết:', (await evalJs(`document.querySelector('#details-body').innerText`)).replace(/\n+/g, ' | '));
-  await evalJs(`document.querySelector('#dlg-details').close(); document.querySelector('#btn-help').click();`);
+  await shot(`ui-${w}-causes.png`);
+  console.log('nguyên nhân hiển thị trực tiếp:', (await evalJs(`document.querySelector('#result .res-causes').innerText`)).replace(/\n+/g, ' | '));
+  await evalJs(`document.querySelector('#btn-help').click()`);
   await sleep(500);
   await shot(`ui-${w}-help.png`);
   await evalJs(`document.querySelector('#dlg-help').close(); __set({'mat-nang': 6})`);
