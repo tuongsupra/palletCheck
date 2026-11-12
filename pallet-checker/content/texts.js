@@ -22,8 +22,8 @@ export const TEXTS = {
 
   // Tên các bộ đếm
   counters: {
-    vua: 'Sứt lớn',
-    nang: 'Hỏng nặng',
+    vua: 'Mất mảng gỗ',
+    nang: 'Gãy / mất cả thanh',
     longDinh: 'Bung đinh (còn nguyên)',
   },
 
@@ -31,7 +31,7 @@ export const TEXTS = {
   shortHints: {
     mat: {
       vua: 'Sâu ≥ 25mm hoặc dài ≥ 300mm',
-      nang: 'Gãy, vỡ, nứt, mất',
+      nang: 'Gãy, vỡ, nứt, mất cả thanh',
       longDinh: 'Bung đinh, gỗ còn nguyên',
     },
     ganh: {
@@ -41,11 +41,11 @@ export const TEXTS = {
     },
     gu: {
       vua: 'Sâu ≥ 20mm hoặc rộng ≥ 1/3',
-      nang: 'Vỡ, nứt, tách đôi, mất',
+      nang: 'Vỡ, nứt, tách đôi, mất cả gù',
     },
     day: {
       vua: 'Sâu ≥ 25mm hoặc dài ≥ 300mm',
-      nang: 'Gãy, vỡ, nứt, mất',
+      nang: 'Gãy, vỡ, nứt, mất cả thanh',
       longDinh: 'Bung đinh, gỗ còn nguyên',
     },
   },
@@ -61,22 +61,22 @@ export const TEXTS = {
   // Dòng gợi ý dưới từng bộ đếm, theo nhóm
   hints: {
     mat: {
-      vua: 'Vết sứt sâu từ 25mm trở lên HOẶC dài từ 300mm trở lên.',
-      nang: 'Gãy, vỡ, nứt, mất thanh.',
+      vua: 'Vết mất mảng sâu từ 25mm trở lên HOẶC dài từ 300mm trở lên.',
+      nang: 'Gãy, vỡ, nứt, mất cả thanh.',
       longDinh: 'Thanh bung đinh, bật lên nhưng gỗ còn nguyên, chưa gãy/nứt.',
     },
     ganh: {
-      vua: 'Vết sứt sâu từ 25mm trở lên HOẶC dài từ 300mm trở lên.',
+      vua: 'Vết mất mảng sâu từ 25mm trở lên HOẶC dài từ 300mm trở lên.',
       nang: 'Gánh gãy, nứt, vỡ, mất — mất chịu lực.',
       longDinh: 'Gánh tách rời khỏi gù/thanh mặt nhưng còn nguyên, chưa gãy/nứt.',
     },
     gu: {
-      vua: 'Vết sứt sâu từ 20mm trở lên HOẶC rộng từ 1/3 mặt gù trở lên.',
-      nang: 'Gù vỡ, nứt, tách đôi, mất.',
+      vua: 'Vết mất mảng sâu từ 20mm trở lên HOẶC rộng từ 1/3 mặt gù trở lên.',
+      nang: 'Gù vỡ, nứt, tách đôi, hoặc mất cả cục gù.',
     },
     day: {
-      vua: 'Vết sứt sâu từ 25mm trở lên HOẶC dài từ 300mm trở lên.',
-      nang: 'Gãy, vỡ, nứt, mất thanh.',
+      vua: 'Vết mất mảng sâu từ 25mm trở lên HOẶC dài từ 300mm trở lên.',
+      nang: 'Gãy, vỡ, nứt, mất cả thanh.',
       longDinh: 'Thanh bung đinh, bật ra nhưng gỗ còn nguyên, chưa gãy/nứt.',
     },
   },
@@ -84,20 +84,20 @@ export const TEXTS = {
   // Mô tả đầy đủ các mức (dùng trong màn hình "?")
   levels: {
     nhe: {
-      name: 'Nhẹ (không cần nhập)',
-      text: 'Sứt nhỏ: thanh mặt/gánh/đáy sâu dưới 25mm VÀ dài dưới 300mm; cục gù sâu dưới 20mm VÀ rộng dưới 1/3 mặt gù; hư đầu thanh nhưng không bung đinh. Vẫn tính là TH1.',
+      name: 'Mẻ nhỏ (không cần nhập)',
+      text: 'Dưới 25mm và dưới 300mm (gù: dưới 20mm và dưới 1/3). Vẫn tính là TH1.',
     },
     vua: {
-      name: 'Sứt lớn',
-      text: 'Thanh mặt/gánh/đáy: sâu từ 25mm trở lên HOẶC dài từ 300mm trở lên. Cục gù: sâu từ 20mm trở lên HOẶC rộng từ 1/3 mặt gù trở lên. Chỉ cần vượt MỘT trong hai là sứt lớn. Pallet tối thiểu TH2.',
+      name: 'Mất mảng gỗ',
+      text: 'Sâu từ 25mm hoặc dài từ 300mm (gù: sâu từ 20mm hoặc rộng từ 1/3). Tối thiểu TH2.',
     },
     nang: {
-      name: 'Hỏng nặng',
-      text: 'Gãy, vỡ, nứt, mất cấu kiện; cục gù tách đôi. Đây là loại phải thay thế.',
+      name: 'Gãy / mất cả thanh',
+      text: 'Gãy, vỡ, nứt, hoặc mất cả thanh/cả cục gù. Đây là loại phải thay thế.',
     },
     longDinh: {
-      name: 'Bung đinh / tách rời (còn nguyên)',
-      text: 'Thanh mặt, gánh, đáy bị bung đinh hoặc tách rời nhưng gỗ còn nguyên. Chưa tính loại: đóng lại đinh rồi kiểm lại. Thanh nào không đóng lại được (nứt chỗ đinh, tách vỡ) thì nhập vào Hỏng nặng.',
+      name: 'Bung đinh (còn nguyên)',
+      text: 'Thanh mặt, gánh, đáy bị bung đinh hoặc tách rời nhưng gỗ còn nguyên. Đóng lại đinh rồi kiểm lại. Thanh nào không đóng lại được (nứt chỗ đinh, tách vỡ) thì nhập vào Gãy / mất cả thanh.',
     },
   },
 
@@ -116,7 +116,7 @@ export const TEXTS = {
     action: 'Đóng lại đinh các thanh bị bung/tách, rồi kiểm tra lại.',
     listTitle: 'Cần đóng lại:',
     button: 'Đã đóng lại — kiểm tra lại',
-    reminder: 'Thanh nào đóng lại không được thì nhập vào Hỏng nặng.',
+    reminder: 'Thanh nào đóng lại không được thì nhập vào Gãy / mất cả thanh.',
   },
 
   // Các nhãn giao diện khác
@@ -125,8 +125,8 @@ export const TEXTS = {
     details: 'Xem chi tiết',
     reasonsTitle: 'Lý do',
     actionTitle: 'Hành động',
-    noReasons: 'Không có cấu kiện sứt lớn hoặc hỏng nặng.',
-    totalDamaged: 'Tổng cấu kiện hỏng (sứt lớn + hỏng nặng)',
+    noReasons: 'Không có cấu kiện mất mảng gỗ hoặc gãy/mất cả thanh.',
+    totalDamaged: 'Tổng cấu kiện hỏng (mất mảng gỗ + gãy/mất)',
     newPallet: 'Kiểm tra pallet mới',
     confirmReset: 'Xóa dữ liệu đang nhập và kiểm pallet mới?',
     close: 'Đóng',
@@ -143,11 +143,11 @@ export const TEXTS = {
     title: 'Hướng dẫn sử dụng',
     stepsTitle: 'Các bước kiểm một pallet',
     steps: [
-      'Đếm từng nhóm cấu kiện (mặt, gánh, gù, đáy): bấm + cho mỗi thanh/cục bị Sứt lớn, Hỏng nặng hoặc Bung đinh.',
-      'Sứt nhỏ (nhẹ) không cần nhập.',
+      'Đếm từng nhóm cấu kiện (mặt, gánh, gù, đáy): bấm + cho mỗi thanh/cục bị Mất mảng gỗ, Gãy / mất cả thanh hoặc Bung đinh.',
+      'Mẻ nhỏ (dưới 25mm và dưới 300mm) không cần nhập.',
       'Mỗi cấu kiện chỉ nhập vào MỘT mục, chọn mục nặng nhất.',
       'Kết quả hiện ngay ở thanh dưới cùng. Bấm "Xem chi tiết" để xem lý do.',
-      'Nếu báo CHƯA CHỐT: đóng lại đinh, bấm "Đã đóng lại — kiểm tra lại", rồi nhập thanh nào không đóng được vào Hỏng nặng.',
+      'Nếu báo CHƯA CHỐT: đóng lại đinh, bấm "Đã đóng lại — kiểm tra lại", rồi nhập thanh nào không đóng được vào Gãy / mất cả thanh.',
       'Xong một pallet, bấm "Kiểm tra pallet mới".',
     ],
     diagramTitle: 'Sơ đồ pallet (26 cấu kiện)',
@@ -155,19 +155,19 @@ export const TEXTS = {
     levelsTitle: 'Các mức tình trạng',
     rulesTitle: 'Quy tắc phân loại',
     rules: [
-      'Thanh mặt hỏng nặng: 1–3 → TH2, 4–5 → TH3, từ 6 → TH4.',
-      'Gánh: sứt lớn → TH2, 1 hỏng nặng → TH3, từ 2 → TH4.',
-      'Cục gù hỏng nặng: 1 → TH2, 2–3 → TH3, từ 4 → TH4.',
-      'Thanh đáy hỏng nặng: 1–3 → TH2, 4 → TH3, 5 → TH4.',
-      'Có bất kỳ sứt lớn nào → tối thiểu TH2.',
-      'Tổng sứt lớn + hỏng nặng từ 7 trở lên → TH4.',
+      'Thanh mặt gãy / mất: 1–3 → TH2, 4–5 → TH3, từ 6 → TH4.',
+      'Gánh: mất mảng gỗ → TH2, 1 thanh gãy/mất → TH3, từ 2 → TH4.',
+      'Cục gù gãy / mất: 1 → TH2, 2–3 → TH3, từ 4 → TH4.',
+      'Thanh đáy gãy / mất: 1–3 → TH2, 4 → TH3, 5 → TH4.',
+      'Có bất kỳ cấu kiện nào mất mảng gỗ → tối thiểu TH2.',
+      'Tổng mất mảng gỗ + gãy/mất từ 7 trở lên → TH4.',
       'Mối mọt / nhiễm bẩn / mục → TH4.',
     ],
     gaugeTitle: 'Cách dùng thước mẫu',
     gauge: [
       'In file thước mẫu trên giấy A4, chọn "Kích thước thật / 100%", không chọn "Vừa trang".',
       'Kiểm tra vạch 100mm bằng thước thật trước khi dùng.',
-      'Đặt thước vào vết sứt: sâu từ 25mm (gù: 20mm) trở lên HOẶC dài từ 300mm trở lên là Sứt lớn.',
+      'Đặt thước vào vết mẻ/khuyết: sâu từ 25mm (gù: 20mm) trở lên HOẶC dài từ 300mm trở lên là Mất mảng gỗ.',
     ],
     gaugeLink: 'Mở thước mẫu để in',
     privacy: 'App không lưu và không gửi dữ liệu đi đâu. Tải lại trang là bắt đầu lại.',

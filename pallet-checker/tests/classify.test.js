@@ -74,7 +74,7 @@ describe('chi tiết output', () => {
   test('ca 26: reasons có cả mối mọt và thanh mặt', () => {
     const r = classify(mk({ moiMot: true, mat: { nang: 6 } }));
     assert.ok(r.reasons.some((s) => s.includes('Mối mọt')));
-    assert.ok(r.reasons.some((s) => s.includes('Thanh mặt hỏng nặng: 6')));
+    assert.ok(r.reasons.some((s) => s.includes('Thanh mặt gãy/mất: 6')));
   });
 
   test('trạng thái ban đầu: TH1, không lý do, tổng 0', () => {
@@ -105,7 +105,7 @@ describe('chi tiết output', () => {
 
   test('reasons sắp xếp từ nặng đến nhẹ', () => {
     const r = classify(mk({ mat: { vua: 1 }, gu: { nang: 2 }, day: { nang: 3 } }));
-    assert.deepEqual(r.reasons, ['Cục gù hỏng nặng: 2', 'Thanh mặt sứt lớn: 1', 'Thanh đáy hỏng nặng: 3']);
+    assert.deepEqual(r.reasons, ['Cục gù gãy/mất: 2', 'Thanh mặt mất mảng gỗ: 1', 'Thanh đáy gãy/mất: 3']);
   });
 
   test('lý do tổng ≥ 7 xuất hiện khi đạt ngưỡng', () => {
