@@ -186,6 +186,15 @@ main {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
+.result.recheck .res-text { overflow: visible; }
+.result.recheck .res-meaning {
+  white-space: normal; font-size: 0.875rem; line-height: 1.25;
+}
+.result.recheck .res-sub {
+  white-space: normal; font-size: 0.75rem; line-height: 1.35;
+  margin-top: 2px; overflow: visible;
+}
+
 .res-right { display: flex; align-items: center; gap: 6px; flex: none; }
 
 .res-recheck-wrap {
