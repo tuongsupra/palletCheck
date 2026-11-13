@@ -100,6 +100,11 @@ function buildHelp() {
 
 // Xây dựng danh sách giải thích chi tiết nguyên nhân
 function buildExplanations(res) {
+  if (res.status === 'recheck' && res.level === 1) {
+    const totalRenail = res.recheckGroups ? res.recheckGroups.reduce((s, g) => s + g.count, 0) : 0;
+    return [`Chưa chốt: còn ${totalRenail} thanh cần đóng lại đinh.`];
+  }
+
   if (res.level === 1) {
     return ['Pallet đạt chuẩn sử dụng: Không có cấu kiện mất mảng gỗ hoặc gãy/mất cả thanh.'];
   }
@@ -139,6 +144,11 @@ function buildExplanations(res) {
 
 // Tính toán đề xuất sửa 1-2 chi tiết để đưa về trạng thái tốt hơn
 function buildRepairSuggestions(state, currentRes) {
+  if (currentRes.status === 'recheck' && currentRes.level <= 1) {
+    const totalRenail = currentRes.recheckGroups ? currentRes.recheckGroups.reduce((s, g) => s + g.count, 0) : 0;
+    return [`Chưa chốt: còn ${totalRenail} thanh cần đóng lại đinh trước khi phân loại chính thức.`];
+  }
+
   if (currentRes.level <= 1) {
     return ['Pallet đã đạt chuẩn TH1 (sẵn sàng sử dụng), không cần sửa chữa cấu kiện.'];
   }
@@ -229,7 +239,7 @@ function buildRepairSuggestions(state, currentRes) {
   // Nếu không thể về TH2 hay TH1 chỉ với 1-2 sửa chữa: tính số lượng tối thiểu để về TH2/TH1
   if (suggestions.length === 0) {
     // Tìm cấu kiện hư hỏng nặng nhất
-    suggestions.push(`Hư hỏng quá nhiều cấu kiện, cần thay thế toàn diện các cấu kiện gãy/mất để hạ cấp về TH2.`);
+    suggestions.push(`Hư hỏng quá nhiều cấu kiện, cần thay thế toàn diện các cấu kiện gãy/mất để đưa về TH2.`);
   }
 
   return suggestions;
@@ -300,8 +310,8 @@ function renderResult(res) {
           <div class="res-left" data-act="details">
             <span class="res-badge res-label recheck">CHƯA CHỐT</span>
             <div class="res-text">
-              <span class="res-meaning">${esc(TEXTS.recheck.title)}</span>
-              <span class="res-sub rc-prov">Tạm tính: <strong>${res.label}</strong> · ${items}</span>
+              <span class="res-meaning rc-prov">Tạm tính: <strong>${res.label}</strong></span>
+              <span class="res-sub rc-items">Cần đóng lại: <strong>${items}</strong></span>
             </div>
           </div>
           <div class="res-right">
@@ -365,7 +375,7 @@ function fillDetails(res) {
     <div class="dlg-status-banner lv${res.level} ${recheck ? 'recheck' : ''}">
       <span class="dlg-badge">${recheck ? 'CHƯA CHỐT' : res.label}</span>
       <div class="dlg-status-info">
-        <h3>${esc(recheck ? 'Tạm tính: ' + res.label + ' — ' + R.meaning : R.meaning)}</h3>
+        <h3>${esc(recheck ? 'Tạm tính: ' + res.label + (res.level === 1 ? ' (Chưa chốt)' : ' — ' + R.meaning) : R.meaning)}</h3>
         <p>Tổng cấu kiện hư hỏng: <strong>${res.totalDamaged}/26</strong> thanh</p>
       </div>
     </div>
@@ -373,7 +383,7 @@ function fillDetails(res) {
     ${recheckSection}
 
     <div class="dlg-section">
-      <h4>📌 Nguyên nhân xếp loại ${res.label}:</h4>
+      <h4>📌 ${recheck && res.level === 1 ? 'Tình trạng hiện tại' : `Nguyên nhân xếp loại ${res.label}`}:</h4>
       <ul class="dlg-list">
         ${explanations.map(s => `<li>${s}</li>`).join('')}
       </ul>
